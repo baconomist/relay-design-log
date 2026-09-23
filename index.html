@@ -125,18 +125,24 @@
 
   .topbar-right{display:flex;align-items:center;gap:10px;}
   .theme-toggle{
-    display:flex;align-items:center;justify-content:center;
-    width:34px;height:34px;flex:none;
+    display:flex;align-items:center;gap:7px;justify-content:center;
+    height:34px;flex:none;
+    padding:0 14px 0 12px;
     border:1px solid var(--border);
     background:var(--surface);
     color:var(--text-dim);
     border-radius:999px;
     cursor:pointer;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:.02em;
     transition:background .15s ease, color .15s ease, border-color .15s ease;
   }
   .theme-toggle:hover{color:var(--text);border-color:var(--accent-2);}
   .theme-toggle:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px;}
-  .theme-toggle svg{width:17px;height:17px;}
+  .theme-toggle svg{width:16px;height:16px;flex:none;}
+  .theme-toggle .label{white-space:nowrap;}
   .theme-toggle .i-sun{display:none;}
   .theme-toggle .i-moon{display:block;}
   :root[data-theme="light"] .theme-toggle .i-sun{display:none;}
@@ -266,17 +272,6 @@
   .members b{font-family:'JetBrains Mono';font-size:12.5px;flex:none;min-width:auto;}
   .members .sep{color:var(--text-dim);}
 
-  .howto{
-    margin-top:26px;background:var(--surface-2);border:1px solid var(--border);
-    border-radius:var(--radius);padding:18px 20px;
-  }
-  .howto h3{margin:0 0 8px;font-size:15px;}
-  .howto ol{margin:0;padding-left:18px;font-size:13.5px;color:var(--text-dim);display:flex;flex-direction:column;gap:6px;}
-  .howto code{
-    font-family:'JetBrains Mono';font-size:12px;background:var(--surface);
-    border:1px solid var(--border);padding:1px 6px;border-radius:5px;
-  }
-
   footer{
     border-top:1px solid var(--border);margin-top:20px;padding-block:22px 40px;
     display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
@@ -318,6 +313,7 @@
         <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
         </svg>
+        <span class="label" id="theme-toggle-label">Light mode</span>
       </button>
     </div>
   </header>
@@ -478,16 +474,6 @@
       </div>
 
       <div class="entries" id="entries"></div>
-
-      <div class="howto">
-        <h3>Logging a new entry</h3>
-        <ol>
-          <li>Open <code>index.html</code> in the repo and find the <code>ENTRIES</code> array near the top of the <code>&lt;script&gt;</code> tag at the bottom of the file.</li>
-          <li>Add a new object at the top of the array: <code>date</code> (YYYY&#8209;MM&#8209;DD), <code>title</code>, a <code>members</code> list of <code>{ name, contribution }</code> pairs, and <code>notes</code> describing what progress was made.</li>
-          <li>Commit and push to <code>main</code> &mdash; GitHub Pages rebuilds the live site within about a minute.</li>
-          <li>Log something every week the project moves &mdash; even a short entry beats a gap.</li>
-        </ol>
-      </div>
     </section>
   </main>
 
@@ -564,9 +550,12 @@
 
   // theme toggle
   const themeBtn = document.getElementById("theme-toggle");
+  const themeLabel = document.getElementById("theme-toggle-label");
   function applyThemeLabel(){
     const isDark = document.documentElement.getAttribute("data-theme") !== "light";
-    themeBtn.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+    const switchTo = isDark ? "Light mode" : "Dark mode";
+    themeBtn.setAttribute("aria-label", "Switch to " + switchTo.toLowerCase());
+    themeLabel.textContent = switchTo;
   }
   applyThemeLabel();
   themeBtn.addEventListener("click", () => {
