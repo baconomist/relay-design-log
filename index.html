@@ -443,8 +443,9 @@
       <div class="howto">
         <h3>Logging a new entry</h3>
         <ol>
-          <li>Ask Claude (in this project) to add a new entry &mdash; give it the date, who worked on what, and what progress was made. It will update this page and republish.</li>
-          <li>Or edit it directly: open the page source and add an object to the <code>ENTRIES</code> array near the top of the <code>&lt;script&gt;</code> tag, following the same shape as the existing entries.</li>
+          <li>Open <code>index.html</code> in the repo and find the <code>ENTRIES</code> array near the top of the <code>&lt;script&gt;</code> tag at the bottom of the file.</li>
+          <li>Add a new object at the top of the array: <code>date</code> (YYYY&#8209;MM&#8209;DD), <code>title</code>, a <code>members</code> list of <code>{ name, contribution }</code> pairs, and <code>notes</code> describing what progress was made.</li>
+          <li>Commit and push to <code>main</code> &mdash; GitHub Pages rebuilds the live site within about a minute.</li>
           <li>Log something every week the project moves &mdash; even a short entry beats a gap.</li>
         </ol>
       </div>
