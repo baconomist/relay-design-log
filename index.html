@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RELAY Design Log</title>
+<meta name="description" content="MTE 481 capstone design log — a mesh comms device for staying in touch in crowds too dense for cell service.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#eef2f0;
+    --surface:#ffffff;
+    --surface-2:#e4e9e5;
+    --text:#10201c;
+    --text-dim:#4c5f59;
+    --border:#c7d1cb;
+    --accent:#ea4f1e;
+    --accent-ink:#ffffff;
+    --accent-2:#0e8f8a;
+    --accent-2-soft:#dff2f0;
+    --accent-soft:#fde7dd;
+    --good:#1f8a54;
+    --shadow: 0 1px 0 rgba(16,32,28,.04);
+    --radius:14px;
+    --maxw:1080px;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0c1512;
+      --surface:#121f1b;
+      --surface-2:#182722;
+      --text:#eaf3ef;
+      --text-dim:#93a8a1;
+      --border:#233530;
+      --accent:#ff7a45;
+      --accent-ink:#1a0a03;
+      --accent-2:#57d8c9;
+      --accent-2-soft:#123531;
+      --accent-soft:#2c1c14;
+      --good:#57d18a;
+      --shadow: 0 1px 0 rgba(0,0,0,.2);
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0c1512;
+    --surface:#121f1b;
+    --surface-2:#182722;
+    --text:#eaf3ef;
+    --text-dim:#93a8a1;
+    --border:#233530;
+    --accent:#ff7a45;
+    --accent-ink:#1a0a03;
+    --accent-2:#57d8c9;
+    --accent-2-soft:#123531;
+    --accent-soft:#2c1c14;
+    --good:#57d18a;
+    --shadow: 0 1px 0 rgba(0,0,0,.2);
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    font-size:15px;
+    padding-inline:20px;
+  }
+  img{max-width:100%;}
+  h1,h2,h3,.disp{font-family:'Space Grotesk',system-ui,sans-serif;}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace;}
+  p{line-height:1.6;color:var(--text);}
+  a{color:var(--accent-2);}
+
+  .app{max-width:var(--maxw);margin:0 auto;}
+
+  /* ---- topbar ---- */
+  .topbar{
+    position:sticky;
+    top:env(safe-area-inset-top,0px);
+    z-index:20;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding-block:16px;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{width:30px;height:30px;flex:none;}
+  .brand-text{display:flex;flex-direction:column;line-height:1.1;}
+  .brand-text b{font-size:17px;letter-spacing:.02em;}
+  .brand-text span{font-size:11px;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;}
+  nav.tabs{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:999px;}
+  nav.tabs button{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    border:none;
+    background:transparent;
+    color:var(--text-dim);
+    padding:8px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  nav.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);}
+  nav.tabs button:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px;}
+
+  /* ---- hero ---- */
+  .hero{
+    position:relative;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    margin-block:20px;
+    padding:36px 28px;
+    overflow:hidden;
+    background:
+      radial-gradient(120% 140% at 100% 0%, var(--accent-2-soft), transparent 60%),
+      var(--surface);
+  }
+  .hero canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.55;}
+  .hero-inner{position:relative;z-index:1;max-width:640px;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--accent-2);font-weight:600;margin-bottom:14px;
+  }
+  .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 0 3px var(--accent-2-soft);}
+  .hero h1{font-size:clamp(40px,7vw,64px);line-height:.95;margin:0 0 12px;letter-spacing:-.01em;}
+  .hero h1 em{font-style:normal;color:var(--accent);}
+  .hero p.lede{font-size:16.5px;color:var(--text-dim);max-width:52ch;margin:0 0 20px;}
+  .hero-stats{display:flex;gap:22px;flex-wrap:wrap;}
+  .hero-stats div{display:flex;flex-direction:column;}
+  .hero-stats b{font-family:'JetBrains Mono';font-size:19px;}
+  .hero-stats span{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;}
+
+  /* ---- sections ---- */
+  section.block{padding-block:34px;border-top:1px solid var(--border);}
+  section.block:first-of-type{border-top:none;}
+  .kicker{
+    font-family:'JetBrains Mono';
+    font-size:12px;color:var(--accent);
+    letter-spacing:.06em;text-transform:uppercase;
+    display:flex;align-items:center;gap:8px;margin-bottom:8px;
+  }
+  .kicker::before{content:"";width:16px;height:1px;background:var(--accent);}
+  h2.h{font-size:24px;margin:0 0 14px;letter-spacing:-.01em;}
+  .lead-text{color:var(--text-dim);max-width:68ch;margin-bottom:18px;}
+  .two-col{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;}
+  @media (max-width:720px){.two-col{grid-template-columns:1fr;}}
+
+  ul.plain{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
+  ul.plain li{
+    display:flex;gap:10px;padding:12px 14px;background:var(--surface);
+    border:1px solid var(--border);border-radius:10px;font-size:14px;
+  }
+  ul.plain li::before{content:"→";color:var(--accent-2);font-weight:600;flex:none;}
+
+  .callout{
+    background:var(--surface-2);
+    border-left:3px solid var(--accent);
+    border-radius:8px;
+    padding:14px 16px;
+    font-size:13.5px;
+    color:var(--text-dim);
+  }
+
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  @media (max-width:640px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+  .stat{
+    background:var(--surface);border:1px solid var(--border);border-radius:10px;
+    padding:14px;
+  }
+  .stat b{display:block;font-family:'JetBrains Mono';font-size:18px;color:var(--accent);}
+  .stat span{font-size:12px;color:var(--text-dim);}
+
+  .net-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
+  .pill{
+    font-family:'JetBrains Mono';font-size:12.5px;
+    background:var(--accent-2-soft);color:var(--accent-2);
+    border:1px solid color-mix(in srgb, var(--accent-2) 35%, transparent);
+    padding:7px 12px;border-radius:999px;
+  }
+
+  table.cmp{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px;}
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;}
+  table.cmp th,table.cmp td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--border);}
+  table.cmp thead th{
+    background:var(--surface-2);font-family:'JetBrains Mono';font-size:11.5px;
+    text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim);
+  }
+  table.cmp tbody tr:last-child td{border-bottom:none;}
+  table.cmp td.us{color:var(--accent);font-weight:600;}
+  table.cmp th.us-col,table.cmp td.us-col{background:var(--accent-soft);}
+  .yes{color:var(--good);}
+  .no{color:var(--text-dim);}
+
+  .draw-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:640px){.draw-grid{grid-template-columns:1fr;}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;}
+  .card h3{margin:0 0 6px;font-size:15px;}
+  .card p{margin:0;font-size:13.5px;color:var(--text-dim);}
+  .card .fix{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);font-size:13px;color:var(--good);}
+
+  /* ---- log page ---- */
+  .log-intro{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;flex-wrap:wrap;margin-block:22px 18px;}
+  .log-count{font-family:'JetBrains Mono';font-size:12.5px;color:var(--text-dim);}
+  .log-count b{color:var(--text);}
+
+  .entries{display:flex;flex-direction:column;gap:14px;}
+  .entry{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:18px 20px;position:relative;
+  }
+  .entry.template{border-style:dashed;}
+  .entry-top{display:flex;justify-content:space-between;gap:16px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px;}
+  .entry-date{font-family:'JetBrains Mono';font-size:12.5px;color:var(--accent-2);letter-spacing:.03em;}
+  .entry-title{font-size:17px;font-weight:600;font-family:'Space Grotesk';margin:4px 0 10px;}
+  .badge-template{
+    font-family:'JetBrains Mono';font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;
+    background:var(--accent-soft);color:var(--accent);padding:3px 8px;border-radius:6px;
+  }
+  .entry-notes{font-size:14px;color:var(--text-dim);margin:0 0 12px;}
+  .members{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .members li{
+    display:flex;gap:8px;font-size:13.5px;padding:8px 10px;background:var(--surface-2);border-radius:8px;
+  }
+  .members b{font-family:'JetBrains Mono';font-size:12.5px;flex:none;min-width:auto;}
+  .members .sep{color:var(--text-dim);}
+
+  .howto{
+    margin-top:26px;background:var(--surface-2);border:1px solid var(--border);
+    border-radius:var(--radius);padding:18px 20px;
+  }
+  .howto h3{margin:0 0 8px;font-size:15px;}
+  .howto ol{margin:0;padding-left:18px;font-size:13.5px;color:var(--text-dim);display:flex;flex-direction:column;gap:6px;}
+  .howto code{
+    font-family:'JetBrains Mono';font-size:12px;background:var(--surface);
+    border:1px solid var(--border);padding:1px 6px;border-radius:5px;
+  }
+
+  footer{
+    border-top:1px solid var(--border);margin-top:20px;padding-block:22px 40px;
+    display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    font-size:12px;color:var(--text-dim);
+  }
+  footer .mono{letter-spacing:.02em;}
+
+  [hidden]{display:none!important;}
+  @media (prefers-reduced-motion: reduce){ * { animation-duration:0.001ms !important; } }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="7" cy="24" r="3" fill="var(--accent-2)"/>
+        <circle cx="25" cy="7" r="3" fill="var(--accent-2)"/>
+        <circle cx="24" cy="25" r="4" fill="var(--accent)"/>
+        <circle cx="9" cy="8" r="2.4" fill="var(--accent-2)"/>
+        <path d="M9 8L24 25M7 24L25 7M7 24L24 25M25 7L9 8" stroke="var(--border)" stroke-width="1.2"/>
+      </svg>
+      <div class="brand-text">
+        <b>RELAY</b>
+        <span>MTE 481 · Fall 2026</span>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Site sections">
+      <button role="tab" id="tab-overview" aria-selected="true" aria-controls="overview">Overview</button>
+      <button role="tab" id="tab-log" aria-selected="false" aria-controls="log">Design Log</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="overview" class="page" role="tabpanel" aria-labelledby="tab-overview">
+
+      <div class="hero">
+        <canvas id="mesh"></canvas>
+        <div class="hero-inner">
+          <div class="eyebrow">Capstone Design Project</div>
+          <h1>Comms that<br>survive <em>the crowd.</em></h1>
+          <p class="lede">A low-cost mesh network device that keeps text messages and location sharing alive when 50,000 phones on one cell tower means none of them work.</p>
+          <div class="hero-stats">
+            <div><b>&lt;$10–20</b><span>BOM cost / unit</span></div>
+            <div><b>&lt;10s</b><span>message latency</span></div>
+            <div><b>1,000</b><span>users per mesh</span></div>
+          </div>
+        </div>
+      </div>
+
+      <section class="block">
+        <div class="kicker">The need</div>
+        <h2 class="h">Cell networks buckle exactly when you need them most</h2>
+        <div class="two-col">
+          <p class="lead-text">In areas of extremely high device density, cellular reception can't handle every phone trying to access the network at once. Even the simplest functions stop going through &mdash; calls, texts, location services. The exact things you'd reach for in an emergency.</p>
+          <div class="callout">
+            <strong>Case in point:</strong> during the 2019 Raptors championship parade, cell service across downtown Toronto collapsed. Finding friends or family in the crowd meant guessing, not messaging.
+            <div class="net-row" style="margin-top:10px;">
+              <span class="pill">Large events</span>
+              <span class="pill">Music festivals</span>
+              <span class="pill">Marathons &amp; parades</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="block">
+        <div class="kicker">Objective</div>
+        <h2 class="h">Move critical messages off the saturated band</h2>
+        <p class="lead-text">Build a mesh network system that keeps high-priority cellular services functioning in large crowds &mdash; by routing over a separate frequency band (LoRa or Wi&#8209;Fi&nbsp;HaLow) that never touches standard cell frequencies, so it can't add to the congestion it's working around.</p>
+      </section>
+
+      <section class="block">
+        <div class="kicker">Constraints</div>
+        <h2 class="h">What the solution can't do</h2>
+        <ul class="plain">
+          <li>Whether it's a protocol or a device, it must never obstruct any other function of the phone or cellular network.</li>
+          <li>As a device: it must also be lightweight, low-cost to the consumer, and durable enough to survive weather and being worn on a person all day.</li>
+          <li>Low power enough to run for a full day on a battery &mdash; transmitting only when required, not continuously.</li>
+        </ul>
+      </section>
+
+      <section class="block">
+        <div class="kicker">Success criteria</div>
+        <h2 class="h">What has to work, in order</h2>
+        <div class="draw-grid">
+          <div class="card">
+            <h3>Core</h3>
+            <p>Text messages and location updates transmit reliably over the mesh network.</p>
+          </div>
+          <div class="card">
+            <h3>Milestone 2</h3>
+            <p>Voice calls transmit over the network.</p>
+          </div>
+          <div class="card">
+            <h3>Stretch</h3>
+            <p>Direct contact to medical services from the device.</p>
+          </div>
+          <div class="card">
+            <h3>Differentiator</h3>
+            <p>Better form factor and lower cost than existing competitors &mdash; by using the phone as the interface instead of building a new one from scratch.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="block">
+        <div class="kicker">Requirements</div>
+        <h2 class="h">Spec targets</h2>
+        <div class="stat-grid">
+          <div class="stat"><b>Water resistant</b><span>Survives rain, sweat, spills</span></div>
+          <div class="stat"><b>Durable</b><span>Drops, crowd contact, all-day wear</span></div>
+          <div class="stat"><b>Battery powered</b><span>No mains dependency</span></div>
+          <div class="stat"><b>$10–20</b><span>Bill of materials, per unit</span></div>
+          <div class="stat"><b>&lt;10 sec</b><span>Text message latency</span></div>
+          <div class="stat"><b>&lt;10 sec</b><span>Location update frequency</span></div>
+        </div>
+        <div class="net-row">
+          <span class="pill">Mesh network</span>
+          <span class="pill">3–5 hops</span>
+          <span class="pill">Up to 1,000 users</span>
+        </div>
+      </section>
+
+      <section class="block">
+        <div class="kicker">Prior art</div>
+        <h2 class="h">Competitors prove the need &mdash; not the price point</h2>
+        <p class="lead-text">TotemCompass and CrowdCompass both ship hardware for this exact problem. Both build a full custom interface onto the device itself rather than leaning on the phone people already carry &mdash; which drives up cost and bulk.</p>
+        <div class="table-wrap">
+          <table class="cmp">
+            <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th>Totem Compass</th>
+                <th>Crowd Compass</th>
+                <th class="us-col">Relay (target)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Max group size</td><td>4 people</td><td>&mdash;</td><td class="us-col us">1,000 people</td></tr>
+              <tr><td>Cost</td><td>$113 CAD</td><td>$177</td><td class="us-col us">$10&ndash;20 BOM</td></tr>
+              <tr><td>Messaging</td><td class="no">No</td><td class="yes">Yes</td><td class="us-col us">Yes</td></tr>
+              <tr><td>Protocol</td><td>Custom 2.4 GHz</td><td>LoRa</td><td class="us-col us">LoRa / Wi&#8209;Fi HaLow</td></tr>
+              <tr><td>Map (see friends)</td><td class="no">No</td><td class="yes">Yes</td><td class="us-col us">Yes</td></tr>
+              <tr><td>Interface</td><td>On-device</td><td>On-device</td><td class="us-col us">Your phone</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="block">
+        <div class="kicker">Alternatives considered</div>
+        <h2 class="h">Why not satellite phones?</h2>
+        <ul class="plain">
+          <li>Prohibitively expensive for the average attendee.</li>
+          <li>Not everyone owns one, or would think to bring one to an event.</li>
+          <li>Shared satellite bandwidth would likely hit the same network-flooding problem at high density.</li>
+        </ul>
+      </section>
+
+      <section class="block">
+        <div class="kicker">Open risk</div>
+        <h2 class="h">Drawbacks we're designing around</h2>
+        <div class="draw-grid">
+          <div class="card">
+            <h3>Phones die over a long event</h3>
+            <p>A dead phone can't run our app, no matter how good the mesh is.</p>
+            <div class="fix">Mitigation: airplane mode drops the phone's own cellular radio search, so pairing with our device may net-save battery compared to a phone hunting for signal all day.</div>
+          </div>
+          <div class="card">
+            <h3>Adoption depends on density</h3>
+            <p>A mesh network needs enough devices nearby to actually form hops.</p>
+            <div class="fix">Mitigation: target group and event distribution (not solo retail) so density arrives with the crowd.</div>
+          </div>
+        </div>
+      </section>
+
+    </section>
+
+    <section id="log" class="page" role="tabpanel" aria-labelledby="tab-log" hidden>
+      <div class="log-intro">
+        <div>
+          <div class="kicker">Progress record</div>
+          <h2 class="h" style="margin-bottom:4px;">Design Log</h2>
+          <p class="lead-text" style="margin-bottom:0;">Dated entries of what the team worked on, who worked on it, and what changed. Updated regularly through requirements, prototyping, and testing.</p>
+        </div>
+        <div class="log-count"><b id="entry-count">0</b> entries logged</div>
+      </div>
+
+      <div class="entries" id="entries"></div>
+
+      <div class="howto">
+        <h3>Logging a new entry</h3>
+        <ol>
+          <li>Ask Claude (in this project) to add a new entry &mdash; give it the date, who worked on what, and what progress was made. It will update this page and republish.</li>
+          <li>Or edit it directly: open the page source and add an object to the <code>ENTRIES</code> array near the top of the <code>&lt;script&gt;</code> tag, following the same shape as the existing entries.</li>
+          <li>Log something every week the project moves &mdash; even a short entry beats a gap.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="mono">RELAY &mdash; MTE 481 Capstone &middot; Fall 2026</span>
+    <span class="mono" id="updated"></span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  // Add new entries here — most recent first. `template:true` marks
+  // placeholder entries meant to be replaced with real names/work.
+  const ENTRIES = [
+    {
+      date: "2026-09-22",
+      title: "Project kickoff — need, objectives & constraints defined",
+      template: true,
+      members: [
+        { name: "Add your name", contribution: "Add what you worked on" },
+        { name: "Add your name", contribution: "Add what you worked on" },
+        { name: "Add your name", contribution: "Add what you worked on" }
+      ],
+      notes: "Defined the core problem (cellular collapse in dense crowds, using the 2019 Raptors parade as the reference case), set the primary objective of moving high-priority services onto an unused frequency band, and locked in constraints around cost, power, and durability. Benchmarked TotemCompass and CrowdCompass as the closest existing products and identified cost and form factor as our main differentiator."
+    }
+  ];
+
+  function fmtDate(iso){
+    const d = new Date(iso + "T00:00:00");
+    return d.toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
+  }
+
+  function renderEntries(){
+    const wrap = document.getElementById("entries");
+    const sorted = [...ENTRIES].sort((a,b)=> a.date < b.date ? 1 : -1);
+    document.getElementById("entry-count").textContent = sorted.length;
+    if(!sorted.length){
+      wrap.innerHTML = '<div class="card"><p>No entries yet — log the first one.</p></div>';
+      return;
+    }
+    wrap.innerHTML = sorted.map(e => `
+      <article class="entry ${e.template ? "template" : ""}">
+        <div class="entry-top">
+          <span class="entry-date mono">${fmtDate(e.date)}</span>
+          ${e.template ? '<span class="badge-template">Example — replace with your entry</span>' : ""}
+        </div>
+        <h3 class="entry-title">${e.title}</h3>
+        <p class="entry-notes">${e.notes}</p>
+        <ul class="members">
+          ${e.members.map(m => `<li><b>${m.name}</b><span class="sep">&mdash;</span><span>${m.contribution}</span></li>`).join("")}
+        </ul>
+      </article>
+    `).join("");
+  }
+  renderEntries();
+
+  // tabs
+  const tabs = {
+    "tab-overview": document.getElementById("overview"),
+    "tab-log": document.getElementById("log")
+  };
+  Object.keys(tabs).forEach(id => {
+    document.getElementById(id).addEventListener("click", () => {
+      Object.keys(tabs).forEach(otherId => {
+        const selected = otherId === id;
+        document.getElementById(otherId).setAttribute("aria-selected", String(selected));
+        tabs[otherId].hidden = !selected;
+      });
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  });
+
+  document.getElementById("updated").textContent = "Last updated " + new Date().toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
+
+  // mesh network hero animation
+  const canvas = document.getElementById("mesh");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(canvas && !reduceMotion){
+    const ctx = canvas.getContext("2d");
+    let w, h, nodes, raf;
+    function styleColor(varName, fallback){
+      const v = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      return v || fallback;
+    }
+    function resize(){
+      const rect = canvas.parentElement.getBoundingClientRect();
+      w = canvas.width = rect.width * devicePixelRatio;
+      h = canvas.height = rect.height * devicePixelRatio;
+      canvas.style.width = rect.width + "px";
+      canvas.style.height = rect.height + "px";
+      const count = Math.max(14, Math.floor((rect.width * rect.height) / 22000));
+      nodes = Array.from({length: count}, () => ({
+        x: Math.random()*w, y: Math.random()*h,
+        vx: (Math.random()-0.5)*0.15*devicePixelRatio,
+        vy: (Math.random()-0.5)*0.15*devicePixelRatio,
+        r: (Math.random()*1.6+1.2)*devicePixelRatio
+      }));
+    }
+    function tick(){
+      ctx.clearRect(0,0,w,h);
+      const line = styleColor("--accent-2", "#0e8f8a");
+      const dot = styleColor("--accent-2", "#0e8f8a");
+      const maxDist = 150 * devicePixelRatio;
+      for(const n of nodes){
+        n.x += n.vx; n.y += n.vy;
+        if(n.x < 0 || n.x > w) n.vx *= -1;
+        if(n.y < 0 || n.y > h) n.vy *= -1;
+      }
+      for(let i=0;i<nodes.length;i++){
+        for(let j=i+1;j<nodes.length;j++){
+          const a = nodes[i], b = nodes[j];
+          const dx=a.x-b.x, dy=a.y-b.y;
+          const dist = Math.sqrt(dx*dx+dy*dy);
+          if(dist < maxDist){
+            ctx.globalAlpha = (1 - dist/maxDist) * 0.5;
+            ctx.strokeStyle = line;
+            ctx.lineWidth = devicePixelRatio;
+            ctx.beginPath();
+            ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.globalAlpha = 0.85;
+      ctx.fillStyle = dot;
+      for(const n of nodes){
+        ctx.beginPath();
+        ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      raf = requestAnimationFrame(tick);
+    }
+    resize();
+    tick();
+    window.addEventListener("resize", () => { cancelAnimationFrame(raf); resize(); tick(); });
+  }
+})();
+</script>
+</body>
+</html>
