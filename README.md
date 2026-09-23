@@ -1,4 +1,4 @@
-# RELAY — Design Log
+# RAVENET — Design Log
 
 Design log website for the MTE 481 capstone project (Fall 2026): a low-cost mesh
 network device that keeps texting and location sharing working in crowds dense
