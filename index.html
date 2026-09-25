@@ -11,7 +11,7 @@
   })();
 </script>
 <title>RAVENET Design Log</title>
-<meta name="description" content="MTE 481 capstone design log — a mesh comms device for staying in touch in crowds too dense for cell service.">
+<meta name="description" content="MTE 481 capstone design log for a mesh comms device that keeps people in touch in crowds too dense for cell service.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
@@ -265,6 +265,11 @@
     background:var(--accent-soft);color:var(--accent);padding:3px 8px;border-radius:6px;
   }
   .entry-notes{font-size:14px;color:var(--text-dim);margin:0 0 12px;}
+  .entry-results{background:var(--surface-2);border-radius:8px;padding:10px 12px;font-size:13.5px;color:var(--text-dim);margin:0 0 12px;}
+  .entry-results b{
+    display:block;margin-bottom:4px;color:var(--text);
+    font-family:'JetBrains Mono';font-size:11px;text-transform:uppercase;letter-spacing:.05em;
+  }
   .members{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
   .members li{
     display:flex;gap:8px;font-size:13.5px;padding:8px 10px;background:var(--surface-2);border-radius:8px;
@@ -279,6 +284,23 @@
   }
   footer .mono{letter-spacing:.02em;}
 
+  .wip-banner{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    flex-wrap:wrap;text-align:center;
+    background:var(--accent);color:var(--accent-ink);
+    font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;
+    padding:9px 16px;border-radius:10px;margin-top:16px;
+  }
+  .wip-banner .tag{
+    font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.06em;
+    background:rgba(0,0,0,.18);padding:3px 8px;border-radius:6px;
+  }
+  .wip-banner button{
+    font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;
+    background:none;border:none;color:var(--accent-ink);
+    text-decoration:underline;text-underline-offset:2px;cursor:pointer;padding:0;
+  }
+
   [hidden]{display:none!important;}
   @media (prefers-reduced-motion: reduce){ * { animation-duration:0.001ms !important; } }
 </style>
@@ -286,6 +308,11 @@
 <body>
 
 <div class="app">
+  <div class="wip-banner">
+    <span class="tag">Design WIP</span>
+    <span>Nothing on this page is finalized yet.</span>
+    <button type="button" id="banner-log-link">Click to view the design log &rarr;</button>
+  </div>
   <header class="topbar">
     <div class="brand">
       <svg class="brand-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -339,7 +366,7 @@
         <div class="kicker">The need</div>
         <h2 class="h">Cell networks buckle exactly when you need them most</h2>
         <div class="two-col">
-          <p class="lead-text">In areas of extremely high device density, cellular reception can't handle every phone trying to access the network at once. Even the simplest functions stop going through &mdash; calls, texts, location services. The exact things you'd reach for in an emergency.</p>
+          <p class="lead-text">In areas of extremely high device density, cellular reception can't handle every phone trying to access the network at once. Even the simplest functions stop going through: calls, texts, location services. The exact things you'd reach for in an emergency.</p>
           <div class="callout">
             <strong>Case in point:</strong> during the 2019 Raptors championship parade, cell service across downtown Toronto collapsed. Finding friends or family in the crowd meant guessing, not messaging.
             <div class="net-row" style="margin-top:10px;">
@@ -354,7 +381,7 @@
       <section class="block">
         <div class="kicker">Objective</div>
         <h2 class="h">Move critical messages off the saturated band</h2>
-        <p class="lead-text">Build a mesh network system that keeps high-priority cellular services functioning in large crowds &mdash; by routing over a separate frequency band (LoRa or Wi&#8209;Fi&nbsp;HaLow) that never touches standard cell frequencies, so it can't add to the congestion it's working around.</p>
+        <p class="lead-text">Build a mesh network system that keeps high-priority cellular services functioning in large crowds. It routes over a separate frequency band (LoRa or Wi&#8209;Fi&nbsp;HaLow) that never touches standard cell frequencies, so it can't add to the congestion it's working around.</p>
       </section>
 
       <section class="block">
@@ -363,7 +390,7 @@
         <ul class="plain">
           <li>Whether it's a protocol or a device, it must never obstruct any other function of the phone or cellular network.</li>
           <li>As a device: it must also be lightweight, low-cost to the consumer, and durable enough to survive weather and being worn on a person all day.</li>
-          <li>Low power enough to run for a full day on a battery &mdash; transmitting only when required, not continuously.</li>
+          <li>Low power enough to run for a full day on a battery, transmitting only when required, not continuously.</li>
         </ul>
       </section>
 
@@ -385,7 +412,7 @@
           </div>
           <div class="card">
             <h3>Differentiator</h3>
-            <p>Better form factor and lower cost than existing competitors &mdash; by using the phone as the interface instead of building a new one from scratch.</p>
+            <p>Better form factor and lower cost than existing competitors, achieved by using the phone as the interface instead of building a new one from scratch.</p>
           </div>
         </div>
       </section>
@@ -410,8 +437,8 @@
 
       <section class="block">
         <div class="kicker">Prior art</div>
-        <h2 class="h">Competitors prove the need &mdash; not the price point</h2>
-        <p class="lead-text">TotemCompass and CrowdCompass both ship hardware for this exact problem. Both build a full custom interface onto the device itself rather than leaning on the phone people already carry &mdash; which drives up cost and bulk.</p>
+        <h2 class="h">Competitors</h2>
+        <p class="lead-text">TotemCompass and CrowdCompass both ship hardware for this exact problem. Both build a full custom interface onto the device itself rather than leaning on the phone people already carry, which drives up cost and bulk.</p>
         <div class="table-wrap">
           <table class="cmp">
             <thead>
@@ -423,7 +450,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>Max group size</td><td>4 people</td><td>&mdash;</td><td class="us-col us">1,000 people</td></tr>
+              <tr><td>Max group size</td><td>4 people</td><td>N/A</td><td class="us-col us">1,000 people</td></tr>
               <tr><td>Cost</td><td>$113 CAD</td><td>$177</td><td class="us-col us">$10&ndash;20 BOM</td></tr>
               <tr><td>Messaging</td><td class="no">No</td><td class="yes">Yes</td><td class="us-col us">Yes</td></tr>
               <tr><td>Protocol</td><td>Custom 2.4 GHz</td><td>LoRa</td><td class="us-col us">LoRa / Wi&#8209;Fi HaLow</td></tr>
@@ -478,26 +505,27 @@
   </main>
 
   <footer>
-    <span class="mono">RAVENET &mdash; MTE 481 Capstone &middot; Fall 2026</span>
+    <span class="mono">RAVENET &middot; MTE 481 Capstone &middot; Fall 2026</span>
     <span class="mono" id="updated"></span>
   </footer>
 </div>
 
 <script>
 (function(){
-  // Add new entries here — most recent first. `template:true` marks
+  // Add new entries here, most recent first. `template:true` marks
   // placeholder entries meant to be replaced with real names/work.
   const ENTRIES = [
     {
       date: "2026-09-22",
-      title: "Project kickoff — need, objectives & constraints defined",
-      template: true,
+      title: "Project kickoff: discussed the problem as a group",
       members: [
-        { name: "Add your name", contribution: "Add what you worked on" },
-        { name: "Add your name", contribution: "Add what you worked on" },
-        { name: "Add your name", contribution: "Add what you worked on" }
+        { name: "Alex Szabo", contribution: "Discussed the problem and got familiar with it as a group" },
+        { name: "Lucas Borowiecki", contribution: "Discussed the problem and got familiar with it as a group" },
+        { name: "Ishan Sahu", contribution: "Discussed the problem and got familiar with it as a group" },
+        { name: "Griffin Wilson", contribution: "Discussed the problem and got familiar with it as a group" }
       ],
-      notes: "Defined the core problem (cellular collapse in dense crowds, using the 2019 Raptors parade as the reference case), set the primary objective of moving high-priority services onto an unused frequency band, and locked in constraints around cost, power, and durability. Benchmarked TotemCompass and CrowdCompass as the closest existing products and identified cost and form factor as our main differentiator."
+      notes: "First meeting as a team. Talked through the core problem (cellular collapse in dense crowds, using the 2019 Raptors parade as the reference case) and got everyone up to speed on it together, no formal objectives or constraints locked in yet.",
+      results: "Walked away from the meeting with everyone having their own research as a to-do, so we can individually compare criticisms of our problem and solution before regrouping."
     }
   ];
 
@@ -511,19 +539,20 @@
     const sorted = [...ENTRIES].sort((a,b)=> a.date < b.date ? 1 : -1);
     document.getElementById("entry-count").textContent = sorted.length;
     if(!sorted.length){
-      wrap.innerHTML = '<div class="card"><p>No entries yet — log the first one.</p></div>';
+      wrap.innerHTML = '<div class="card"><p>No entries yet. Log the first one.</p></div>';
       return;
     }
     wrap.innerHTML = sorted.map(e => `
       <article class="entry ${e.template ? "template" : ""}">
         <div class="entry-top">
           <span class="entry-date mono">${fmtDate(e.date)}</span>
-          ${e.template ? '<span class="badge-template">Example — replace with your entry</span>' : ""}
+          ${e.template ? '<span class="badge-template">Example, replace with your entry</span>' : ""}
         </div>
         <h3 class="entry-title">${e.title}</h3>
         <p class="entry-notes">${e.notes}</p>
+        ${e.results ? `<div class="entry-results"><b>Results</b>${e.results}</div>` : ""}
         <ul class="members">
-          ${e.members.map(m => `<li><b>${m.name}</b><span class="sep">&mdash;</span><span>${m.contribution}</span></li>`).join("")}
+          ${e.members.map(m => `<li><b>${m.name}</b><span class="sep">&middot;</span><span>${m.contribution}</span></li>`).join("")}
         </ul>
       </article>
     `).join("");
@@ -535,16 +564,18 @@
     "tab-overview": document.getElementById("overview"),
     "tab-log": document.getElementById("log")
   };
-  Object.keys(tabs).forEach(id => {
-    document.getElementById(id).addEventListener("click", () => {
-      Object.keys(tabs).forEach(otherId => {
-        const selected = otherId === id;
-        document.getElementById(otherId).setAttribute("aria-selected", String(selected));
-        tabs[otherId].hidden = !selected;
-      });
-      window.scrollTo({top:0, behavior:"smooth"});
+  function goToTab(id){
+    Object.keys(tabs).forEach(otherId => {
+      const selected = otherId === id;
+      document.getElementById(otherId).setAttribute("aria-selected", String(selected));
+      tabs[otherId].hidden = !selected;
     });
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+  Object.keys(tabs).forEach(id => {
+    document.getElementById(id).addEventListener("click", () => goToTab(id));
   });
+  document.getElementById("banner-log-link").addEventListener("click", () => goToTab("tab-log"));
 
   document.getElementById("updated").textContent = "Last updated " + new Date().toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
 
