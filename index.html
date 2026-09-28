@@ -516,6 +516,18 @@
   // placeholder entries meant to be replaced with real names/work.
   const ENTRIES = [
     {
+      date: "2026-09-27",
+      title: "Network architecture decision: Wi-Fi HaLow over mesh",
+      members: [
+        { name: "Alex Szabo", contribution: "Team meeting: architecture decision and discovery planning" },
+        { name: "Lucas Borowiecki", contribution: "Team meeting: architecture decision and discovery planning" },
+        { name: "Ishan Sahu", contribution: "Team meeting: architecture decision and discovery planning" },
+        { name: "Griffin Wilson", contribution: "Team meeting: architecture decision and discovery planning" }
+      ],
+      notes: "Debated LoRa mesh vs. Wi-Fi HaLow for the network architecture. Mesh caps out around 1,000-2,000 users no matter how much frequency planning (spatial power control, channel splitting) we throw at it, and that ceiling wouldn't meaningfully separate us from competitors. Wi-Fi HaLow scales to effectively unlimited users, since more infrastructure just means more capacity, and still holds up fine at small user counts, so we voted to build on Wi-Fi HaLow. Mesh would only be an incremental cost/form-factor improvement; HaLow is a genuinely different solution and we didn't want to design for planned obsolescence. Also split customer discovery into two segments: festivalgoers, where the pain point is well-established and products like Totem Compass (~$150) already prove people will pay for it, and festival organizers, the harder conversation since we don't yet know if connectivity is even on their radar, and the HaLow decision partly hinges on whether they'd buy festival-scale infrastructure. Set ground rules for discovery calls too: never pitch the idea, ask about real past behavior instead of hypotheticals ('what did you do when you lost your friend' instead of 'would you pay for X'), and treat people who've already searched for a solution as the clearest sign the pain is real.",
+      results: "Landed on three learning outcomes for festivalgoer interviews (biggest pain points, how often they come up and what they tried, what they actually bought for their last festival) and three for organizer interviews (common attendee complaints, hardest logistical challenge, how they currently handle connectivity). Next steps before tomorrow's 1pm check-in: post the learning outcomes to Discord, start about 10 festivalgoer conversations in pairs, reach out to festival organizers and contacts like Stefano, and track down anyone who owns a Totem Compass or Crowd Compass for an early interview."
+    },
+    {
       date: "2026-09-22",
       title: "Project kickoff: discussed the problem as a group",
       members: [
