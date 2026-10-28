@@ -516,6 +516,18 @@
   // placeholder entries meant to be replaced with real names/work.
   const ENTRIES = [
     {
+      date: "2026-10-26",
+      title: "Required specs ironed out with Brendan and Shambhala's paramedics",
+      members: [
+        { name: "Alex Szabo", contribution: "Meeting with Brendan and the paramedics: worked through the problem and required specs" },
+        { name: "Lucas Borowiecki", contribution: "Meeting with Brendan and the paramedics: worked through the problem and required specs" },
+        { name: "Ishan Sahu", contribution: "Meeting with Brendan and the paramedics: worked through the problem and required specs" },
+        { name: "Griffin Wilson", contribution: "Meeting with Brendan and the paramedics: worked through the problem and required specs" }
+      ],
+      notes: "Talked the problem through further with Brendan and a few of the paramedics who work Shambhala's medical tent, this time to pin down exactly what a product would need to do. Their volume is bigger than we had: about 2,500 visits a week, of which about 700 only want a bandage or Tylenol and about 1,800 are seen by a provider. Of those, about 1,100 are treated in chairs in minor treatment and about 700 end up in beds (up to 200 a day at peak), with 20 to 30 extreme cases a week. Volunteers work in teams of about 40 (3 to 4 doctors, about 10 nurses, plus med students and paramedics), and about 15 people per team would actually use vitals monitors. Monitoring equipment is limited and shared between patients, so they need a scalable way to get more people monitored, and it has to be durable: they bring $50k defibrillators and monitors on site and those still break. Any device has to be tied to a patient or bed ID that holds up when patients switch beds, and we need a plan for someone walking off with a wearable. They ranked the vitals: (1) SpO2 with the pulse waveform, (2) heart rate, with ECG useful in some cases but not required, (3) blood pressure, nice to have but it needs specialized equipment, (4) respiratory rate, which can come from impedance, (5) glucose, and (6) maybe temperature, which often doesn't get taken but is rarely out of range (about 5 patients a year, 3 of them fevers). Movement came up as a seventh: an alert when a patient wakes up and starts pulling out their IV, since staff currently have to physically restrain them, plus a geofence for patients trying to leave. Triage turned out to matter as much as continuous monitoring: even a non-continuous device that takes every measurement at once would help them triage patients. Alerts have to be customizable, and we still need to work out how they reach staff, who mostly coordinate over radio today. They also want records digitized, with checks like catching bad timestamps.",
+      results: "Ironed out the required specs to make this a product: SpO2 with pulse waveform and heart rate as the must-haves, then blood pressure, respiratory rate, glucose and possibly temperature in that order; a spot-check triage mode alongside continuous monitoring; movement alerts for IV pulling and patients leaving; customizable notifications; every reading tied to a patient or bed ID; and rugged, shareable hardware. Sizing comes out to 2 to 5 devices, since only 20 to 30 patients a week need this level of monitoring. Every design option now has to answer four questions: how standalone and simple is it, is it rugged, is it accurate, and is it maintainable?"
+    },
+    {
       date: "2026-10-17",
       title: "Direction for now: wearable vitals monitoring for Shambhala's medical tent",
       members: [
