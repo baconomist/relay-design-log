@@ -10,7 +10,7 @@
     document.documentElement.setAttribute("data-theme", stored === "light" ? "light" : "dark");
   })();
 </script>
-<title>RAVENET Design Log</title>
+<title>Festival Vital Monitor Design Log</title>
 <meta name="description" content="MTE 481 capstone design log for a rugged, low-cost vitals monitoring system for festival medical tents.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -162,8 +162,98 @@
       radial-gradient(120% 140% at 100% 0%, var(--accent-2-soft), transparent 60%),
       var(--surface);
   }
-  .hero canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.55;}
+  .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);gap:24px;align-items:center;}
+  @media (max-width:980px){.hero-grid{grid-template-columns:1fr;}.hero-art{max-width:320px;justify-self:center;}}
   .hero-inner{position:relative;z-index:1;max-width:640px;}
+  .hero-monitor{
+    position:relative;height:66px;margin:24px -28px -36px;
+    border-top:1px solid var(--border);
+    background-color:color-mix(in srgb, var(--bg) 55%, transparent);
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--accent-2) 12%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--accent-2) 12%, transparent) 1px, transparent 1px);
+    background-size:14px 14px;
+  }
+  .hero-monitor canvas{display:block;width:100%;height:100%;}
+  .hr-readout{
+    position:absolute;right:16px;top:50%;transform:translateY(-50%);
+    display:flex;align-items:center;gap:7px;
+    background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 11px;
+    font-family:'JetBrains Mono';
+  }
+  .hr-readout svg{width:15px;height:15px;fill:var(--accent);}
+  .hr-readout svg.beat{animation:beat .35s ease-out;}
+  .hr-readout b{font-size:18px;font-weight:600;color:var(--accent);min-width:2ch;text-align:right;}
+  .hr-readout span{font-size:10.5px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;}
+  @keyframes beat{0%{transform:scale(1.35);}100%{transform:scale(1);}}
+
+  /* ---- 2d medical illustrations ---- */
+  .hero-art{width:100%;height:auto;display:block;}
+  .art-line{fill:none;stroke:var(--text-dim);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .art-thin{stroke-width:1.4;}
+  .art-fill{fill:var(--surface-2);stroke:var(--text-dim);stroke-width:2;}
+  .art-surface{fill:var(--surface);stroke:var(--text-dim);stroke-width:2;}
+  .art-teal{fill:var(--accent-2-soft);stroke:var(--accent-2);stroke-width:2;stroke-linejoin:round;}
+  .art-tent{fill:none;stroke:var(--accent-2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.35;}
+  .art-screen{fill:var(--bg);stroke:var(--text-dim);stroke-width:2;}
+  .art-wave{fill:none;stroke:var(--accent-2);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .art-accent{fill:var(--accent);}
+  .art-band{fill:var(--accent-2);}
+  .art-arm-out{fill:none;stroke:var(--text-dim);stroke-width:11;stroke-linecap:round;}
+  .art-arm-in{fill:none;stroke:var(--surface);stroke-width:7;stroke-linecap:round;}
+  .art-num{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;fill:var(--accent);}
+  .art-unit{font-family:'JetBrains Mono',monospace;font-size:7px;fill:var(--text-dim);}
+  .art-sig{fill:none;stroke:var(--accent-2);stroke-width:2;stroke-linecap:round;animation:sig 1.6s ease-in-out infinite;}
+  .art-sig.s2{animation-delay:.2s;}
+  .art-sig.s3{animation-delay:.4s;}
+  @keyframes sig{0%,100%{opacity:.15;}50%{opacity:1;}}
+
+  .vital h3{display:flex;align-items:center;gap:10px;}
+  .ico{
+    display:inline-grid;place-items:center;flex:none;width:30px;height:30px;border-radius:8px;
+    background:var(--accent-2-soft);color:var(--accent-2);
+  }
+  .ico svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+
+  .board-fig{margin:22px 0 0;}
+  .board{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;}
+  .board-head{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;
+    font-family:'JetBrains Mono';font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim);
+  }
+  .board-head .live{display:flex;align-items:center;gap:8px;color:var(--text);font-weight:600;}
+  .board-head .live i{width:8px;height:8px;border-radius:50%;background:var(--good);animation:blink 2s ease-in-out infinite;}
+  .legend{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;}
+  .legend span{display:flex;align-items:center;gap:6px;}
+  .legend i{width:8px;height:8px;border-radius:50%;}
+  .legend .ok{background:var(--good);}
+  .legend .late{background:var(--accent);}
+  .legend .empty{border:1px dashed var(--text-dim);}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+  .board-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
+  @media (max-width:720px){.board-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  .bed{
+    background:var(--surface);border:1px solid var(--border);border-radius:10px;
+    padding:10px 12px;display:flex;flex-direction:column;gap:6px;min-height:150px;
+  }
+  .bed.late{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent);}
+  .bed.empty{background:transparent;border-style:dashed;}
+  .bed-top{display:flex;align-items:center;gap:7px;font-family:'Space Grotesk';font-size:13.5px;}
+  .bed-top svg{width:20px;height:14px;flex:none;color:var(--text-dim);fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .bed-top .dot{margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--good);}
+  .bed.late .dot{background:var(--accent);}
+  .bed.empty .dot{background:transparent;border:1px dashed var(--text-dim);}
+  .bed-id{font-family:'JetBrains Mono';font-size:11px;color:var(--text-dim);}
+  .bed-vitals{display:flex;gap:16px;}
+  .bed-vitals b{display:block;font-family:'JetBrains Mono';font-size:20px;line-height:1.1;}
+  .bed-vitals span{font-size:10.5px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em;}
+  .spark{width:100%;height:24px;display:block;}
+  .spark path{fill:none;stroke:var(--accent-2);stroke-width:1.6;stroke-linejoin:round;vector-effect:non-scaling-stroke;}
+  .bed.late .spark{opacity:.35;}
+  .bed-foot{margin-top:auto;font-family:'JetBrains Mono';font-size:11.5px;color:var(--text-dim);}
+  .bed.late .bed-foot{color:var(--accent);font-weight:600;}
+  .bed-empty{margin:auto 0;text-align:center;font-size:12px;color:var(--text-dim);}
+  .board-fig figcaption{font-size:12.5px;color:var(--text-dim);margin-top:8px;}
   .eyebrow{
     display:inline-flex;align-items:center;gap:8px;
     font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
@@ -316,14 +406,12 @@
   <header class="topbar">
     <div class="brand">
       <svg class="brand-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="7" cy="24" r="3" fill="var(--accent-2)"/>
-        <circle cx="25" cy="7" r="3" fill="var(--accent-2)"/>
-        <circle cx="24" cy="25" r="4" fill="var(--accent)"/>
-        <circle cx="9" cy="8" r="2.4" fill="var(--accent-2)"/>
-        <path d="M9 8L24 25M7 24L25 7M7 24L24 25M25 7L9 8" stroke="var(--border)" stroke-width="1.2"/>
+        <rect x="1.5" y="1.5" width="29" height="29" rx="8" fill="var(--accent-2-soft)" stroke="var(--accent-2)" stroke-width="1.2"/>
+        <path d="M5 17h6l2-5 3 10 3-13 2 8h3" stroke="var(--accent-2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="26" cy="17" r="2.2" fill="var(--accent)"/>
       </svg>
       <div class="brand-text">
-        <b>RAVENET</b>
+        <b>Festival Vital Monitor</b>
         <span>MTE 481 · Fall 2026</span>
       </div>
     </div>
@@ -349,7 +437,7 @@
     <section id="overview" class="page" role="tabpanel" aria-labelledby="tab-overview">
 
       <div class="hero">
-        <canvas id="mesh"></canvas>
+        <div class="hero-grid">
         <div class="hero-inner">
           <div class="eyebrow">Capstone Design Project</div>
           <h1>Vitals for every<br>bed in <em>the tent.</em></h1>
@@ -358,6 +446,51 @@
             <div><b>~2,500</b><span>visits / week</span></div>
             <div><b>200</b><span>bed patients / day at peak</span></div>
             <div><b>2–5</b><span>devices needed</span></div>
+          </div>
+        </div>
+        <svg class="hero-art" viewBox="0 0 400 280" role="img" aria-label="A patient in a medical tent bed with an IV, an RFID wristband and a finger sensor sending vitals wirelessly to a bedside screen">
+          <path class="art-tent" d="M6 50L200 6L394 50"/>
+          <path class="art-line" d="M8 252H392" opacity=".5"/>
+          <!-- IV pole and bag -->
+          <path class="art-line" d="M34 50V246M20 248h28M26 54h16"/>
+          <rect class="art-teal" x="24" y="58" width="20" height="30" rx="6"/>
+          <path class="art-line art-thin" d="M34 88v10c0 34 58 30 98 42"/>
+          <!-- bed frame -->
+          <rect class="art-fill" x="52" y="118" width="14" height="118" rx="5"/>
+          <rect class="art-fill" x="300" y="140" width="12" height="96" rx="5"/>
+          <path class="art-line" d="M80 196v38M290 196v38"/>
+          <circle class="art-fill" cx="80" cy="242" r="7"/>
+          <circle class="art-fill" cx="290" cy="242" r="7"/>
+          <rect class="art-fill" x="62" y="184" width="242" height="12" rx="4"/>
+          <rect class="art-surface" x="64" y="160" width="238" height="26" rx="8"/>
+          <!-- patient -->
+          <rect class="art-surface" x="70" y="142" width="54" height="20" rx="10"/>
+          <circle class="art-surface" cx="100" cy="134" r="16"/>
+          <path class="art-line art-thin" d="M104 131q4 3 8 0"/>
+          <path class="art-teal" d="M118 162C122 140 150 132 180 136C220 141 262 138 300 150V162Z"/>
+          <path class="art-arm-out" d="M132 144C150 150 172 150 190 142"/>
+          <path class="art-arm-in" d="M132 144C150 150 172 150 190 142"/>
+          <rect class="art-band" x="176" y="140" width="6" height="11" rx="2" transform="rotate(-20 179 145)"/>
+          <rect class="art-accent" x="190" y="134" width="16" height="12" rx="4"/>
+          <!-- wireless signal from the finger sensor -->
+          <path class="art-sig" d="M199.7 124.2A10 10 0 0 1 207.8 132.3"/>
+          <path class="art-sig s2" d="M201.1 116.3A18 18 0 0 1 215.7 130.9"/>
+          <path class="art-sig s3" d="M202.5 108.4A26 26 0 0 1 223.6 129.5"/>
+          <!-- bedside screen -->
+          <path class="art-line" d="M352 116V246M332 248h40"/>
+          <rect class="art-fill" x="316" y="58" width="74" height="58" rx="8"/>
+          <rect class="art-screen" x="322" y="64" width="62" height="46" rx="4"/>
+          <text class="art-num" x="327" y="85">97</text>
+          <text class="art-unit" x="351" y="77">SpO2 %</text>
+          <text class="art-unit" x="351" y="86">HR 72</text>
+          <path class="art-wave" d="M326 100h9l2-4 3 7 3-12 3 9h12l2-4 3 7 3-12 3 9h6"/>
+        </svg>
+        </div>
+        <div class="hero-monitor" aria-hidden="true">
+          <canvas id="trace"></canvas>
+          <div class="hr-readout">
+            <svg viewBox="0 0 24 24" id="hr-heart"><path d="M12 21s-8.5-5.2-8.5-11.6A4.6 4.6 0 0 1 12 6.6a4.6 4.6 0 0 1 8.5 2.8C20.5 15.8 12 21 12 21Z"/></svg>
+            <b id="hr-value">65</b><span>bpm</span>
           </div>
         </div>
       </div>
@@ -382,6 +515,20 @@
         <div class="kicker">Objective</div>
         <h2 class="h">Get more patients monitored with the gear and people they have</h2>
         <p class="lead-text">Build a vitals system around off-the-shelf, already-licensed sensors that can spot-check a patient at triage or stay on them in bed. Readings go through a local gateway that works without internet, attach to the patient's existing RFID encounter ID, land straight in the chart, and feed a live bed board that flags overdue vitals for the twice-daily safety briefings.</p>
+        <figure class="board-fig">
+          <div class="board">
+            <div class="board-head">
+              <span class="live"><i></i>Bed board &middot; main tent</span>
+              <span class="legend">
+                <span><i class="ok"></i>On time</span>
+                <span><i class="late"></i>Vitals overdue</span>
+                <span><i class="empty"></i>Empty</span>
+              </span>
+            </div>
+            <div class="board-grid" id="board-grid"></div>
+          </div>
+          <figcaption>Concept sketch with sample data. Each bed shows its latest readings, and beds with overdue vitals are flagged for the safety briefings.</figcaption>
+        </figure>
       </section>
 
       <section class="block">
@@ -399,20 +546,20 @@
         <div class="kicker">Required vitals</div>
         <h2 class="h">What it has to measure, in the paramedics' priority order</h2>
         <div class="draw-grid">
-          <div class="card">
-            <h3>Must have</h3>
+          <div class="card vital">
+            <h3><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.4A4.1 4.1 0 0 1 12 7.2a4.1 4.1 0 0 1 7.5 2.4C19.5 15.4 12 20 12 20Z"/><path d="M6 12.5h3.5l1.5-2.5 2 5 1.5-2.5H18"/></svg></span>Must have</h3>
             <p>SpO2 with the pulse waveform, and heart rate. ECG is useful in some cases but not required.</p>
           </div>
-          <div class="card">
-            <h3>Next</h3>
+          <div class="card vital">
+            <h3><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16.5a8 8 0 1 1 16 0"/><path d="M12 16.5l4-5"/><circle cx="12" cy="16.5" r="1.4"/><path d="M4 20h16"/></svg></span>Next</h3>
             <p>Blood pressure, which needs specialized equipment, and respiratory rate, which can come from impedance.</p>
           </div>
-          <div class="card">
-            <h3>Later</h3>
+          <div class="card vital">
+            <h3><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5"/></svg></span>Later</h3>
             <p>Glucose, and maybe temperature: it often doesn't get taken, but only about 5 patients a year are out of range.</p>
           </div>
-          <div class="card">
-            <h3>Also asked for</h3>
+          <div class="card vital">
+            <h3><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5" stroke-dasharray="2.6 2.6"/><circle cx="12" cy="8" r="1.6"/><path d="M12 10v4.5M9.5 12h5M12 14.5l-2 3M12 14.5l2 3"/></svg></span>Also asked for</h3>
             <p>Movement alerts when a patient wakes up and starts pulling out their IV, and a geofence for patients trying to leave.</p>
           </div>
         </div>
@@ -513,7 +660,7 @@
   </main>
 
   <footer>
-    <span class="mono">RAVENET &middot; MTE 481 Capstone &middot; Fall 2026</span>
+    <span class="mono">Festival Vital Monitor &middot; MTE 481 Capstone &middot; Fall 2026</span>
     <span class="mono" id="updated"></span>
   </footer>
 </div>
@@ -615,6 +762,53 @@
   }
   renderEntries();
 
+  // concept bed board (sample data only)
+  const BEDS = [
+    { bed: 1, id: "4471", spo2: 98, hr: 76, ago: "6 min ago" },
+    { bed: 2, id: "4502", spo2: 95, hr: 88, ago: "11 min ago" },
+    { bed: 3, id: "4388", spo2: 93, hr: 104, ago: "52 min", late: true },
+    { bed: 4 },
+    { bed: 5, id: "4519", spo2: 99, hr: 64, ago: "3 min ago" },
+    { bed: 6, id: "4467", spo2: 96, hr: 92, ago: "18 min ago" },
+    { bed: 7, id: "4430", spo2: 94, hr: 110, ago: "1 h 05 min", late: true },
+    { bed: 8 }
+  ];
+  const BED_ICON = '<svg viewBox="0 0 24 16" aria-hidden="true"><path d="M2 2v12M2 10h20v4M22 10V8a3 3 0 0 0-3-3h-8v5"/><circle cx="6.5" cy="7" r="2"/></svg>';
+
+  // pulse oximeter style waveform across a 2.5 s window
+  function plethPath(hr){
+    const period = 100 / (2.5 * hr / 60);
+    let d = "";
+    for(let x = 0; x <= 100; x++){
+      const p = (x % period) / period;
+      const v = p < 0.18
+        ? Math.sin(p / 0.18 * Math.PI / 2)
+        : Math.exp(-(p - 0.18) * 3.2) + 0.12 * Math.exp(-Math.pow((p - 0.5) / 0.05, 2));
+      d += (x ? "L" : "M") + x + " " + (21 - v * 17).toFixed(1);
+    }
+    return d;
+  }
+
+  function renderBoard(){
+    document.getElementById("board-grid").innerHTML = BEDS.map(b => {
+      if(!b.id){
+        return `<div class="bed empty"><div class="bed-top">${BED_ICON}<b>Bed ${b.bed}</b><span class="dot"></span></div><div class="bed-empty">Empty</div></div>`;
+      }
+      return `
+        <div class="bed ${b.late ? "late" : ""}">
+          <div class="bed-top">${BED_ICON}<b>Bed ${b.bed}</b><span class="dot"></span></div>
+          <div class="bed-id">ID ${b.id}</div>
+          <div class="bed-vitals">
+            <div><b>${b.spo2}</b><span>SpO2 %</span></div>
+            <div><b>${b.hr}</b><span>HR</span></div>
+          </div>
+          <svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><path d="${plethPath(b.hr)}"/></svg>
+          <div class="bed-foot">${b.late ? "Overdue &middot; " + b.ago : "Checked " + b.ago}</div>
+        </div>`;
+    }).join("");
+  }
+  renderBoard();
+
   // tabs
   const tabs = {
     "tab-overview": document.getElementById("overview"),
@@ -652,68 +846,99 @@
     applyThemeLabel();
   });
 
-  // mesh network hero animation
-  const canvas = document.getElementById("mesh");
+  // heartbeat monitor sweep along the bottom of the hero
+  const canvas = document.getElementById("trace");
+  const hrValue = document.getElementById("hr-value");
+  const hrHeart = document.getElementById("hr-heart");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(canvas && !reduceMotion){
+  if(canvas){
     const ctx = canvas.getContext("2d");
-    let w, h, nodes, raf;
+    const dpr = window.devicePixelRatio || 1;
+    const SPEED = 120;        // sweep speed, CSS px per second
+    const BASE_PERIOD = 110;  // CSS px per beat, about 65 bpm at SPEED
+    let w = 0, h = 0, ys, cursor, t, beatStart, period, peaked, last = 0, acc = 0;
     function styleColor(varName, fallback){
       const v = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
       return v || fallback;
     }
-    function resize(){
-      const rect = canvas.parentElement.getBoundingClientRect();
-      w = canvas.width = rect.width * devicePixelRatio;
-      h = canvas.height = rect.height * devicePixelRatio;
-      canvas.style.width = rect.width + "px";
-      canvas.style.height = rect.height + "px";
-      const count = Math.max(14, Math.floor((rect.width * rect.height) / 22000));
-      nodes = Array.from({length: count}, () => ({
-        x: Math.random()*w, y: Math.random()*h,
-        vx: (Math.random()-0.5)*0.15*devicePixelRatio,
-        vy: (Math.random()-0.5)*0.15*devicePixelRatio,
-        r: (Math.random()*1.6+1.2)*devicePixelRatio
-      }));
+    // one ECG beat (P, QRS, T) as a sum of bumps, phase p in [0, 1)
+    function ecg(p){
+      const g = (mu, s) => Math.exp(-0.5 * Math.pow((p - mu) / s, 2));
+      return 0.12*g(0.18, 0.03) - 0.15*g(0.31, 0.012) + g(0.34, 0.012) - 0.3*g(0.37, 0.012) + 0.25*g(0.6, 0.05);
     }
-    function tick(){
-      ctx.clearRect(0,0,w,h);
-      const line = styleColor("--accent-2", "#0e8f8a");
-      const dot = styleColor("--accent-2", "#0e8f8a");
-      const maxDist = 150 * devicePixelRatio;
-      for(const n of nodes){
-        n.x += n.vx; n.y += n.vy;
-        if(n.x < 0 || n.x > w) n.vx *= -1;
-        if(n.y < 0 || n.y > h) n.vy *= -1;
+    function sample(live){
+      t++;
+      let p = (t - beatStart) / period;
+      if(p >= 1){
+        beatStart = t; p = 0; peaked = false;
+        period = BASE_PERIOD * dpr * (0.9 + Math.random() * 0.2);
       }
-      for(let i=0;i<nodes.length;i++){
-        for(let j=i+1;j<nodes.length;j++){
-          const a = nodes[i], b = nodes[j];
-          const dx=a.x-b.x, dy=a.y-b.y;
-          const dist = Math.sqrt(dx*dx+dy*dy);
-          if(dist < maxDist){
-            ctx.globalAlpha = (1 - dist/maxDist) * 0.5;
-            ctx.strokeStyle = line;
-            ctx.lineWidth = devicePixelRatio;
-            ctx.beginPath();
-            ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
-            ctx.stroke();
-          }
-        }
+      if(live && !peaked && p >= 0.34){
+        peaked = true;
+        hrValue.textContent = Math.round(60 * SPEED * dpr / period);
+        hrHeart.classList.remove("beat");
+        hrHeart.getBoundingClientRect();
+        hrHeart.classList.add("beat");
       }
-      ctx.globalAlpha = 0.85;
-      ctx.fillStyle = dot;
-      for(const n of nodes){
+      return h * 0.62 - ecg(p) * h * 0.48;
+    }
+    function resize(){
+      w = Math.round(canvas.clientWidth * dpr);
+      h = Math.round(canvas.clientHeight * dpr);
+      canvas.width = w; canvas.height = h;
+      t = 0; beatStart = 0; period = BASE_PERIOD * dpr; peaked = true; cursor = 0;
+      ys = new Float32Array(w);
+      for(let x = 0; x < w; x++) ys[x] = sample(false);
+    }
+    function draw(){
+      ctx.clearRect(0, 0, w, h);
+      ctx.lineWidth = 1.8 * dpr;
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = styleColor("--accent-2", "#0e8f8a");
+      const seg = (a, b) => {
+        if(b - a < 2) return;
+        ctx.moveTo(a, ys[a]);
+        for(let x = a + 1; x < b; x++) ctx.lineTo(x, ys[x]);
+      };
+      ctx.beginPath();
+      if(reduceMotion){
+        seg(0, w);
+      } else {
+        seg(0, cursor + 1);
+        seg(cursor + Math.round(26 * dpr), w);
+      }
+      ctx.stroke();
+      if(!reduceMotion){
+        ctx.fillStyle = styleColor("--accent", "#ea4f1e");
         ctx.beginPath();
-        ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+        ctx.arc(cursor, ys[cursor], 3 * dpr, 0, Math.PI * 2);
         ctx.fill();
       }
-      ctx.globalAlpha = 1;
-      raf = requestAnimationFrame(tick);
     }
-    resize();
-    tick();
-    window.addEventListener("resize", () => { cancelAnimationFrame(raf); resize(); tick(); });
+    function tick(now){
+      const cw = Math.round(canvas.clientWidth * dpr);
+      if(cw && cw !== w) resize();
+      if(cw && last){
+        acc = Math.min(acc + (now - last) * SPEED * dpr / 1000, w);
+        const steps = Math.floor(acc);
+        acc -= steps;
+        for(let i = 0; i < steps; i++){
+          cursor = (cursor + 1) % w;
+          ys[cursor] = sample(true);
+        }
+        draw();
+      }
+      last = now;
+      requestAnimationFrame(tick);
+    }
+    if(reduceMotion){
+      const still = () => { resize(); draw(); };
+      still();
+      window.addEventListener("resize", still);
+      themeBtn.addEventListener("click", draw);
+    } else {
+      requestAnimationFrame(tick);
+    }
   }
 })();
 </script>
