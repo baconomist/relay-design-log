@@ -11,7 +11,7 @@
   })();
 </script>
 <title>RAVENET Design Log</title>
-<meta name="description" content="MTE 481 capstone design log for a mesh comms device that keeps people in touch in crowds too dense for cell service.">
+<meta name="description" content="MTE 481 capstone design log for a rugged, low-cost vitals monitoring system for festival medical tents.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
@@ -352,27 +352,27 @@
         <canvas id="mesh"></canvas>
         <div class="hero-inner">
           <div class="eyebrow">Capstone Design Project</div>
-          <h1>Comms that<br>survive <em>the crowd.</em></h1>
-          <p class="lede">A low-cost mesh network device that keeps text messages and location sharing alive when 50,000 phones on one cell tower means none of them work.</p>
+          <h1>Vitals for every<br>bed in <em>the tent.</em></h1>
+          <p class="lede">A rugged, low-cost vitals monitoring system for festival medical tents. Shared sensors triage patients or stay on them in bed, log every reading straight to the patient's record, and flag who needs attention, all without internet.</p>
           <div class="hero-stats">
-            <div><b>&lt;$10–20</b><span>BOM cost / unit</span></div>
-            <div><b>&lt;10s</b><span>message latency</span></div>
-            <div><b>1,000</b><span>users per mesh</span></div>
+            <div><b>~2,500</b><span>visits / week</span></div>
+            <div><b>200</b><span>bed patients / day at peak</span></div>
+            <div><b>2–5</b><span>devices needed</span></div>
           </div>
         </div>
       </div>
 
       <section class="block">
         <div class="kicker">The need</div>
-        <h2 class="h">Cell networks buckle exactly when you need them most</h2>
+        <h2 class="h">Too many patients, too few monitors, all on paper</h2>
         <div class="two-col">
-          <p class="lead-text">In areas of extremely high device density, cellular reception can't handle every phone trying to access the network at once. Even the simplest functions stop going through: calls, texts, location services. The exact things you'd reach for in an emergency.</p>
+          <p class="lead-text">Shambhala's medical tent is run by about 250 volunteers and sees about 2,500 visits a week. About 1,800 of those are seen by a provider and about 700 end up in beds, up to 200 a day at peak. Monitors are limited and shared between patients, so vitals get missed, and everything between the RFID wristband scans at arrival and discharge is charted on paper and typed up by hand after the festival.</p>
           <div class="callout">
-            <strong>Case in point:</strong> during the 2019 Raptors championship parade, cell service across downtown Toronto collapsed. Finding friends or family in the crowd meant guessing, not messaging.
+            <strong>Case in point:</strong> the tent has about 10 beds but only 6 monitors, and some charts show just 2 sets of vitals over 6 hours. Typing up the paper charts takes 20 to 25 med students plus about 30 hours of the medical director's own time every season.
             <div class="net-row" style="margin-top:10px;">
-              <span class="pill">Large events</span>
-              <span class="pill">Music festivals</span>
-              <span class="pill">Marathons &amp; parades</span>
+              <span class="pill">Festival medical tents</span>
+              <span class="pill">Volunteer staff</span>
+              <span class="pill">Patchy internet</span>
             </div>
           </div>
         </div>
@@ -380,39 +380,40 @@
 
       <section class="block">
         <div class="kicker">Objective</div>
-        <h2 class="h">Move critical messages off the saturated band</h2>
-        <p class="lead-text">Build a mesh network system that keeps high-priority cellular services functioning in large crowds. It routes over a separate frequency band (LoRa or Wi&#8209;Fi&nbsp;HaLow) that never touches standard cell frequencies, so it can't add to the congestion it's working around.</p>
+        <h2 class="h">Get more patients monitored with the gear and people they have</h2>
+        <p class="lead-text">Build a vitals system around off-the-shelf, already-licensed sensors that can spot-check a patient at triage or stay on them in bed. Readings go through a local gateway that works without internet, attach to the patient's existing RFID encounter ID, land straight in the chart, and feed a live bed board that flags overdue vitals for the twice-daily safety briefings.</p>
       </section>
 
       <section class="block">
         <div class="kicker">Constraints</div>
-        <h2 class="h">What the solution can't do</h2>
+        <h2 class="h">What the solution has to live with</h2>
         <ul class="plain">
-          <li>Whether it's a protocol or a device, it must never obstruct any other function of the phone or cellular network.</li>
-          <li>As a device: it must also be lightweight, low-cost to the consumer, and durable enough to survive weather and being worn on a person all day.</li>
-          <li>Low power enough to run for a full day on a battery, transmitting only when required, not continuously.</li>
+          <li>It must work without internet, since connectivity on site is patchy.</li>
+          <li>Every reading must be tied to a patient or bed ID, and stay correct when patients switch beds.</li>
+          <li>It must be rugged. The tent's $50k defibrillators and monitors still break on site.</li>
+          <li>It must be simpler than paper for volunteer staff. Charting compliance dropped the last time the tent tried electronic records.</li>
         </ul>
       </section>
 
       <section class="block">
-        <div class="kicker">Success criteria</div>
-        <h2 class="h">What has to work, in order</h2>
+        <div class="kicker">Required vitals</div>
+        <h2 class="h">What it has to measure, in the paramedics' priority order</h2>
         <div class="draw-grid">
           <div class="card">
-            <h3>Core</h3>
-            <p>Text messages and location updates transmit reliably over the mesh network.</p>
+            <h3>Must have</h3>
+            <p>SpO2 with the pulse waveform, and heart rate. ECG is useful in some cases but not required.</p>
           </div>
           <div class="card">
-            <h3>Milestone 2</h3>
-            <p>Voice calls transmit over the network.</p>
+            <h3>Next</h3>
+            <p>Blood pressure, which needs specialized equipment, and respiratory rate, which can come from impedance.</p>
           </div>
           <div class="card">
-            <h3>Stretch</h3>
-            <p>Direct contact to medical services from the device.</p>
+            <h3>Later</h3>
+            <p>Glucose, and maybe temperature: it often doesn't get taken, but only about 5 patients a year are out of range.</p>
           </div>
           <div class="card">
-            <h3>Differentiator</h3>
-            <p>Better form factor and lower cost than existing competitors, achieved by using the phone as the interface instead of building a new one from scratch.</p>
+            <h3>Also asked for</h3>
+            <p>Movement alerts when a patient wakes up and starts pulling out their IV, and a geofence for patients trying to leave.</p>
           </div>
         </div>
       </section>
@@ -421,41 +422,41 @@
         <div class="kicker">Requirements</div>
         <h2 class="h">Spec targets</h2>
         <div class="stat-grid">
-          <div class="stat"><b>Water resistant</b><span>Survives rain, sweat, spills</span></div>
-          <div class="stat"><b>Durable</b><span>Drops, crowd contact, all-day wear</span></div>
-          <div class="stat"><b>Battery powered</b><span>No mains dependency</span></div>
-          <div class="stat"><b>$10–20</b><span>Bill of materials, per unit</span></div>
-          <div class="stat"><b>&lt;10 sec</b><span>Text message latency</span></div>
-          <div class="stat"><b>&lt;10 sec</b><span>Location update frequency</span></div>
+          <div class="stat"><b>Spot-check + continuous</b><span>Triage all vitals at once, or stay on in bed</span></div>
+          <div class="stat"><b>Patient / bed ID</b><span>Every reading tied to an encounter</span></div>
+          <div class="stat"><b>Offline</b><span>Local gateway, no internet needed</span></div>
+          <div class="stat"><b>Custom alerts</b><span>Notifications staff can customize</span></div>
+          <div class="stat"><b>Checked records</b><span>Catches bad timestamps</span></div>
+          <div class="stat"><b>2–5 units</b><span>For the 20–30 patients a week who need it</span></div>
         </div>
         <div class="net-row">
-          <span class="pill">Mesh network</span>
-          <span class="pill">3–5 hops</span>
-          <span class="pill">Up to 1,000 users</span>
+          <span class="pill">Licensed Bluetooth sensors</span>
+          <span class="pill">RFID encounter IDs</span>
+          <span class="pill">Live bed board</span>
         </div>
       </section>
 
       <section class="block">
         <div class="kicker">Prior art</div>
         <h2 class="h">Competitors</h2>
-        <p class="lead-text">TotemCompass and CrowdCompass both ship hardware for this exact problem. Both build a full custom interface onto the device itself rather than leaning on the phone people already carry, which drives up cost and bulk.</p>
+        <p class="lead-text">Continuous vitals wearables already exist, but they're sold to hospitals and home monitoring programs and assume hospital wifi or the cloud. Event tools track patients but make volunteers type into phones. Nothing is built for a volunteer-run tent with patchy internet.</p>
         <div class="table-wrap">
           <table class="cmp">
             <thead>
               <tr>
                 <th>&nbsp;</th>
-                <th>Totem Compass</th>
-                <th>Crowd Compass</th>
-                <th class="us-col">Ravenet (target)</th>
+                <th>Hospital wearables</th>
+                <th>Event tracking</th>
+                <th>Smartwatches</th>
+                <th class="us-col">Ours (target)</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Max group size</td><td>8 people</td><td>N/A</td><td class="us-col us">1,000 people</td></tr>
-              <tr><td>Cost</td><td>$113 CAD</td><td>$177</td><td class="us-col us">$10&ndash;20 BOM</td></tr>
-              <tr><td>Messaging</td><td class="no">No</td><td class="yes">Yes</td><td class="us-col us">Yes</td></tr>
-              <tr><td>Protocol</td><td>Custom 2.4 GHz</td><td>LoRa</td><td class="us-col us">LoRa / Wi&#8209;Fi HaLow</td></tr>
-              <tr><td>Map (see friends)</td><td class="no">No</td><td class="yes">Yes</td><td class="us-col us">Yes</td></tr>
-              <tr><td>Interface</td><td>On-device</td><td>On-device</td><td class="us-col us">Your phone</td></tr>
+              <tr><td>Examples</td><td>Masimo Radius VSM, Biobeat, LifeSignals</td><td>Pulsara, Juvare EMTrack, RaceSafe</td><td>Apple Watch</td><td class="us-col us">Licensed off-the-shelf sensors</td></tr>
+              <tr><td>Built for</td><td>Hospitals, home monitoring</td><td>Event patient tracking</td><td>Consumers</td><td class="us-col us">Festival medical tents</td></tr>
+              <tr><td>Continuous vitals</td><td class="yes">Yes</td><td class="no">No</td><td class="no">Partial (no BP or continuous SpO2)</td><td class="us-col us">Yes</td></tr>
+              <tr><td>Connects through</td><td>Hospital wifi or cloud</td><td>Volunteers' phones</td><td>One iPhone per watch</td><td class="us-col us">Local gateway, offline</td></tr>
+              <tr><td>Data entry</td><td>Automatic</td><td>Typed in by volunteers</td><td>Automatic</td><td class="us-col us">Automatic, tied to RFID ID</td></tr>
             </tbody>
           </table>
         </div>
@@ -463,27 +464,34 @@
 
       <section class="block">
         <div class="kicker">Alternatives considered</div>
-        <h2 class="h">Why not satellite phones?</h2>
+        <h2 class="h">Why not build our own sensor, or use smartwatches?</h2>
         <ul class="plain">
-          <li>Prohibitively expensive for the average attendee.</li>
-          <li>Not everyone owns one, or would think to bring one to an event.</li>
-          <li>Shared satellite bandwidth would likely hit the same network-flooding problem at high density.</li>
+          <li>Licensing our own sensor as a Class II device costs little in Health Canada fees (C$643 to apply) but roughly $300k to $1M+ and 1 to 2 years for the quality system, safety testing and accuracy studies.</li>
+          <li>The "six Apple Watches" idea doesn't hold up: no blood pressure, no continuous SpO2, one iPhone per watch, and a post-surgery trial found its SpO2 much worse than clinical monitors.</li>
+          <li>No wearable reliably detects dehydration yet, and blood sodium still needs a fingerprick test like Abbott's i-STAT, which could feed into the same record later.</li>
         </ul>
       </section>
 
       <section class="block">
         <div class="kicker">Open risk</div>
-        <h2 class="h">Drawbacks we're designing around</h2>
+        <h2 class="h">Risks we're designing around</h2>
         <div class="draw-grid">
           <div class="card">
-            <h3>Phones die over a long event</h3>
-            <p>A dead phone can't run our app, no matter how good the mesh is.</p>
-            <div class="fix">Mitigation: airplane mode drops the phone's own cellular radio search, so pairing with our device may net-save battery compared to a phone hunting for signal all day.</div>
+            <h3>Alerts could make it a medical device</h3>
+            <p>We framed it as a documentation aid to stay outside medical device rules, but staff want alerts for IV pulling and patients leaving. How far alerts can go before the software needs licensing is still open.</p>
           </div>
           <div class="card">
-            <h3>Adoption depends on density</h3>
-            <p>A mesh network needs enough devices nearby to actually form hops.</p>
-            <div class="fix">Mitigation: target group and event distribution (not solo retail) so density arrives with the crowd.</div>
+            <h3>Volunteers may not use it</h3>
+            <p>Charting compliance dropped the last time the tent tried electronic records.</p>
+            <div class="fix">Mitigation: vitals log automatically from the sensors, so nobody has to type into a phone.</div>
+          </div>
+          <div class="card">
+            <h3>Wearables can walk off</h3>
+            <p>A patient can leave with a sensor still on. Staff already want a geofence alert for patients trying to leave; how that would work is still open.</p>
+          </div>
+          <div class="card">
+            <h3>Alerts have to reach someone</h3>
+            <p>Staff mostly coordinate over radio today, so a flag on a screen can go unseen. Who gets notified, and how, is still open.</p>
           </div>
         </div>
       </section>
