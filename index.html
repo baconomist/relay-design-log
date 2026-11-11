@@ -671,6 +671,18 @@
   // placeholder entries meant to be replaced with real names/work.
   const ENTRIES = [
     {
+      date: "2026-11-09",
+      title: "Design direction set and Emerging Impact Award application prepared",
+      members: [
+        { name: "Alex Szabo", contribution: "Team meeting: design direction and Emerging Impact Award application" },
+        { name: "Lucas Borowiecki", contribution: "Team meeting; researched sensor placement, Health Canada licensing, SpO2 and heart rate sensors and OEM oximeter boards; drafted the award application" },
+        { name: "Ishan Sahu", contribution: "Team meeting: design direction and Emerging Impact Award application" },
+        { name: "Griffin Wilson", contribution: "Team meeting: design direction and Emerging Impact Award application" }
+      ],
+      notes: "Met to settle the design and put together our application for the Capstone Emerging Impact Award, which gives up to $1,000 to capstone teams working with an external partner. Scope is now SpO2 and heart rate only, measured continuously, since those are the two vitals Shambhala's team ranked first. Research done the same day shaped the design. Every cleared body-worn device that measures SpO2 continuously on a moving patient puts the sensor on a finger, and no cleared wrist-only device does continuous monitoring. Finger readings fail in the cold and under drug-induced vasoconstriction, while forehead and ear sensors hold up better. One pulse oximeter sensor gives both SpO2 and heart rate, so no separate heart rate sensor is needed. The closest off-the-shelf product is Nonin's WristOx2 3150 with Bluetooth: a wrist unit with a finger sensor, cleared for continuous data collection in motion and low perfusion, accurate to about 2% at rest and 3% in motion. Clinical OEM boards from Nonin, Masimo and Medtronic are the other route, and the chip matters less than the calibration and algorithm behind it. On regulation, a monitor with alarms is likely Class III with Health Canada, and lending a device counts as a sale, so units stay in our hands until we have an investigational testing authorization and ethics approval.",
+      results: "Design direction: a sealed, wipeable armband pod built around a cleared oximeter (an OEM module or WristOx2 integration) with a cabled ear clip to bench-test, plus a Bluetooth chip, battery and charging, an RFID reader for the patient's wristband, an accelerometer, a setup LED and a dock. Units send readings to a local hub that stores them by Doc Number, shows a status board, applies valid-reading rules and prints the section 7 chart page. Split the work into six streams: unit electronics, mechanical, hub software (starting with a unit-to-hub data format and a simulator so the hub can be built before hardware arrives), chart output and clinical workflow, testing (ear clip bench test, Safety Office review, radio-crowding test), and partner, vendors, regulation and budget. Prepared the award application as Vigil Medical with Shambhala's medical director as our partner, asking for funding toward a WristOx2, hub electronics and travel to Shambhala 2027 for hands-on reviews with his paramedics and nurses. Next steps: chase replies from Nonin and Masimo, mock up the section 7 page and walk Brendan through it, finish the ear clip bench test plan, find out what the Safety Office needs, and ask Health Canada how they would classify our software."
+    },
+    {
       date: "2026-10-26",
       title: "Required specs ironed out with Brendan and Shambhala's paramedics",
       members: [
